@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+
+<body>
+
+
+
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-sm">
+                <div class="card text-center">
+                    <div class="card-header h5">
+                        Sentiment Analysis based on Twitter data.
+                    </div>
+                    <div class="card-body">
+                        <input id="sentence_id" class="form-control form-control-lg" type="text" name="sentence"
+                            placeholder="Enter Your Text....">
+                        <h1 class=""><span id="emoji_t" style='font-size:100px;'></span></h1>
+                        <h5 id="sentence"></h5>
+                        <h5 id="prediction"></h5>
+                        <button onclick="submitFunc()" id="submit_btn"
+                            class="btn btn-outline-info my-3">Predict</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-sm">
+                <div class="card text-center">
+                    <div class="card-header h5">
+                        Sentiment Analysis based on IMDB movie review data.
+                    </div>
+                    <div class="card-body">
+                        <input id="imdb_sentence_id" class="form-control form-control-lg" type="text" name="sentence"
+                            placeholder="Enter Your Text....">
+                        <h1 class=""><span id="emoji_m" style='font-size:100px;'></span></h1>
+                        <h5 id="imdb_sentence"></h5>
+                        <h5 id="imdb_prediction"></h5>
+                        <button onclick="imdb_submitFunc()" id="imdb_submit_btn"
+                            class="btn btn-outline-info my-3">Predict</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <script src=" https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
+        </script>
+
+    <script>
+        input_field = document.getElementById('sentence_id');
+        imdb_input_field = document.getElementById('imdb_sentence_id');
+        document.getElementById('emoji_t').innerHTML = "";
+        document.getElementById('emoji_m').innerHTML = "";
+        let posatib_emoji = '&#128512'
+        let nagatib_emoji = '&#129320;'
+
+        const submitFunc = (e) => {
+
+            console.log(input_field.value);
+            console.log(input_field.value.length);
+            if (input_field.value.length < 3) {
+                alert("Please enter atleast 3 characters");
+            }
+            else {
+                fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        sentence: input_field.value
+                    })
+                }).then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        document.getElementById('sentence').innerHTML = "Sentence: " + input_field.value;
+                        document.getElementById('prediction').innerHTML = 'Prediction: ' + data.prediction;
+                        if (data.prediction == 'Positive') {
+                            document.getElementById('emoji_t').innerHTML = "&#128512;";
+                        }
+                        else if (data.prediction == 'Negative') {
+                            document.getElementById('emoji_t').innerHTML = "&#129320;";
+                        }
+                        input_field.value = '';
+                    })
+            }
+        }
+
+        const imdb_submitFunc = (e) => {
+            console.log(imdb_input_field.value);
+            console.log(imdb_input_field.value.length);
+            if (imdb_input_field.value.length < 3) {
+                alert("Please enter atleast 3 characters");
+            }
+            else {
+                fetch('/imdb_predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        sentence: imdb_input_field.value
+                    })
+                }).then(response => response.json())
+                    .then(data => {
+                        if (data.prediction == 'Positive') {
+                            document.getElementById('emoji_m').innerHTML = "&#128512";
+                        }
+                        else if (data.prediction == 'Negative') {
+                            document.getElementById('emoji_m').innerHTML = '&#129320;'
+                        }
+                        document.getElementById('imdb_sentence').innerHTML = "Sentence: " + imdb_input_field.value;
+                        document.getElementById('imdb_prediction').innerHTML = 'Prediction: ' + data.prediction;
+                        imdb_input_field.value = '';
+                    })
+            }
+        }
+    </script>
+</body>
+
+</html>
