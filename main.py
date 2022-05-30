@@ -21,9 +21,9 @@ class Sentence(BaseModel):
 
 class TwtterSentimentAnalysis:
     def __init__(self):
-        self.loaded_model = pickle.load(open('src/finalized_model.sav', 'rb'))
+        self.loaded_model = pickle.load(open('models/finalized_model.sav', 'rb'))
         self.loaded_tokenizer = pickle.load(
-            open('src/finalized_tokenizer.sav', 'rb'))
+            open('models/finalized_tokenizer.sav', 'rb'))
         self.sentiment_label = {1: 'Negative', 0: 'Positive'}
 
     def predict(self, sentence):
@@ -36,9 +36,9 @@ class TwtterSentimentAnalysis:
 
 class IMDBSentimentAnalysis:
     def __init__(self):
-        self.loaded_model = pickle.load(open('src/finalized_model.sav', 'rb'))
+        self.loaded_model = pickle.load(open('models/imdb_model.sav', 'rb'))
         self.loaded_tokenizer = pickle.load(
-            open('src/finalized_tokenizer.sav', 'rb'))
+            open('models/imdb_model_tokenizer.sav', 'rb'))
         self.sentiment_label = {1: 'Negative', 0: 'Positive'}
 
     def predict(self, sentence):
